@@ -1,0 +1,5 @@
+package: github.com/moonou/siamese
+import:
+- package: golang.org/x/net
+- package: github.com/PuerkitoBio/goquery
+- package: golang.org/x/text
