@@ -1,8 +1,14 @@
-hash: 3be6fcb24dcca5afdbc3fac38ea3c788ba8b3c1c285cc4e7c507a231aa338e18
-updated: 2018-01-26T16:46:53.142736+08:00
+hash: 61225340d7137fbfcf2c8005a1e0b6247b8d3c50ad7c05d2e03774a50fc4c2da
+updated: 2018-01-27T16:24:30.682962+08:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
+- name: github.com/astaxie/beego
+  version: f16688817aa428d10361394015b40d096b680542
+  subpackages:
+  - orm
+- name: github.com/go-sql-driver/mysql
+  version: bc14601d1bd56421dd60f561e6052c9ed77f9daf
 - name: github.com/PuerkitoBio/goquery
   version: 2324bda66f504d95adef95070aeb15187b45d3cf
 - name: golang.org/x/net
