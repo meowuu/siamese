@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/meowuu/siamese/models"
 	_ "github.com/go-sql-driver/mysql"
@@ -14,6 +15,8 @@ func init() {
 
 // SaveBook save book to database
 func SaveBook(name string, url string, sections []Sections) (status int64, err error) {
+	fmt.Println("💼 开始写入到数据库")
+
 	o := orm.NewOrm()
 	o.Using("default")
 
@@ -38,5 +41,7 @@ func SaveBook(name string, url string, sections []Sections) (status int64, err e
 			o.Insert(picture)
 		}
 	}
+
+	fmt.Println("写入完成 🐾")
 	return
 }
