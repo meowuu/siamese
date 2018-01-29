@@ -1,6 +1,9 @@
 package lib
 
 import (
+	"sort"
+	"strconv"
+	"regexp"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 	"github.com/PuerkitoBio/goquery"
@@ -17,6 +20,20 @@ type Section struct {
 type Sections struct {
 	Pics []string
 	Section Section
+	IdNum int
+}
+
+type Datas []Sections
+
+func (a Datas) Len() (length int) {
+	length = len(a)
+	return
+}
+func (a Datas) Less(i, j int) bool {
+	return a[i].IdNum < a[j].IdNum
+}
+func (a Datas) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
 }
 
 // GetPage is get book info from url
@@ -48,8 +65,9 @@ func GetPage(url string) (section []Section) {
 	return
 }
 
-func GetPictureToSection(url string, title string, id int) (sections Sections) {
-	fmt.Printf("🐹开始转换 -> %s     ", title)
+func GetPictureToSection(url string, title string, id int, c chan Sections) {
+	var sections Sections
+
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -67,6 +85,35 @@ func GetPictureToSection(url string, title string, id int) (sections Sections) {
 		Title: title,
 		Url: url,
 	}
-	fmt.Println("转换完成✨")	
+	sections.IdNum = id
+	c <- sections
+}
+
+func Stretch(arr []Section) (sections Datas) {
+	c := make(chan Sections)
+	fmt.Println("🐣 开始获取章节内容")
+
+	for _, item := range arr {
+		valid := regexp.MustCompile("/manhua/(\\d+).html")
+		regstr := valid.FindString(item.Url)
+	
+		id, _ := strconv.Atoi(valid.ReplaceAllString(regstr, "$1"))
+
+		go GetPictureToSection(item.Url, item.Title, id, c)
+		// sections = append(sections, section)
+	}
+
+	index := 0
+	for i := range c {
+		sections = append(sections, i)
+		index++
+
+		if index == len(arr) {
+			sort.Sort(sections)
+
+			fmt.Println("获取完成 ✨")
+			return
+		}
+	}
 	return
 }

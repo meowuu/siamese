@@ -30,6 +30,7 @@ func SaveBook(name string, url string, sections []Sections) (status int64, err e
 		section := &models.Section{
 			Name: sectiondata.Section.Title,
 			Bookid: book,
+			Idnum: sectiondata.IdNum,
 		}
 		o.Insert(section)
 

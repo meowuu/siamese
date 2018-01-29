@@ -13,6 +13,7 @@ type Section struct {
 	Id     int    `orm:"column(id);auto"`
 	Name   string `orm:"column(name);size(45);null"`
 	Bookid *Books `orm:"column(bookid);rel(fk)"`
+	Idnum  int    `orm:"column(idnum)"`
 }
 
 func (t *Section) TableName() string {
