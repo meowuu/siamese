@@ -1,4 +1,4 @@
-package: github.com/moonou/siamese
+package: github.com/meowuu/siamese
 import:
 - package: golang.org/x/net
 - package: github.com/PuerkitoBio/goquery
@@ -7,3 +7,10 @@ import:
 - package: github.com/astaxie/beego
   subpackages:
   - orm
+- package: google.golang.org/appengine
+  version: ~1.0.0
+- package: github.com/dghubble/sling
+  version: ^1.1.0
+- package: github.com/kylelemons/go-gypsy
+  subpackages:
+  - yaml
