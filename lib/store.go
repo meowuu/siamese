@@ -2,9 +2,10 @@ package lib
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego/orm"
-	"github.com/meowuu/siamese/models"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/meowuu/siamese/models"
 )
 
 func init() {
@@ -25,18 +26,18 @@ func SaveBook(name string, url string, sections []Sections) (status int64, err e
 	book.Url = url
 
 	o.Insert(book)
-	
+
 	for _, sectiondata := range sections {
 		section := &models.Section{
-			Name: sectiondata.Section.Title,
+			Name:   sectiondata.Section.Title,
 			Bookid: book,
-			Idnum: sectiondata.IdNum,
+			Idnum:  sectiondata.IdNum,
 		}
 		o.Insert(section)
 
 		for _, picture := range sectiondata.Pics {
 			picture := &models.Picture{
-				Url: picture,
+				Url:   picture,
 				Secid: section,
 			}
 			o.Insert(picture)

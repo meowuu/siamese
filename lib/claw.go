@@ -1,26 +1,27 @@
 package lib
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	"regexp"
 	"sort"
 	"strconv"
-	"regexp"
+
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
-	"github.com/PuerkitoBio/goquery"
-	"net/http"
-	"log"
-	"fmt"
 )
 
 type Section struct {
 	Title string
-	Url string
+	Url   string
 }
 
 type Sections struct {
-	Pics []string
+	Pics    []string
 	Section Section
-	IdNum int
+	IdNum   int
 }
 
 type Datas []Sections
@@ -51,13 +52,13 @@ func GetPage(url string) (section []Section) {
 		log.Fatal(err)
 	}
 
-	doc.Find("#list_com.articletxt3 li").Each(func (_ int, s *goquery.Selection) {
+	doc.Find("#list_com.articletxt3 li").Each(func(_ int, s *goquery.Selection) {
 		band := s.Find("a")
 		url, _ := band.Attr("href")
 		if band.Length() > 0 {
 			section = append(section, Section{
 				Title: band.Text(),
-				Url: url,
+				Url:   url,
 			})
 		}
 	})
@@ -74,16 +75,16 @@ func GetPictureToSection(url string, title string, id int, c chan Sections) {
 	}
 	defer res.Body.Close()
 	resultReader := transform.NewReader(res.Body, simplifiedchinese.GBK.NewDecoder())
-	
+
 	document, _ := goquery.NewDocumentFromReader(resultReader)
 
-	document.Find("[name=listNarImg]").First().Find("option").Each(func (_ int, tag *goquery.Selection) {
+	document.Find("[name=listNarImg]").First().Find("option").Each(func(_ int, tag *goquery.Selection) {
 		nextPage, _ := tag.Attr("value")
 		sections.Pics = append(sections.Pics, fmt.Sprintf("http://img.feiwan.net/qidazui/manhua/%d/%s.jpg\n", id, nextPage))
 	})
 	sections.Section = Section{
 		Title: title,
-		Url: url,
+		Url:   url,
 	}
 	sections.IdNum = id
 	c <- sections
@@ -96,7 +97,7 @@ func Stretch(arr []Section) (sections Datas) {
 	for _, item := range arr {
 		valid := regexp.MustCompile("/manhua/(\\d+).html")
 		regstr := valid.FindString(item.Url)
-	
+
 		id, _ := strconv.Atoi(valid.ReplaceAllString(regstr, "$1"))
 
 		go GetPictureToSection(item.Url, item.Title, id, c)
