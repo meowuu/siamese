@@ -1,5 +1,5 @@
-hash: be2dc3b848f1e551fa28056996994a3f4fb31b96e832eaa498795b72164efe4a
-updated: 2018-01-30T16:11:51.300953+08:00
+hash: 276aa6ce6fdafb764ed6cfbe26f216eeda152c2b1771e730ea394495cce0cf3d
+updated: 2018-01-31T16:27:23.551469+08:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -21,6 +21,10 @@ imports:
   - yaml
 - name: github.com/PuerkitoBio/goquery
   version: 09540e565986583836b5fc792fe951ec5fd201dd
+- name: github.com/tidwall/gjson
+  version: 87033efcaec6215741137e8ca61952c53ef2685d
+- name: github.com/tidwall/match
+  version: 1731857f09b1f38450e2c12409748407822dc6be
 - name: golang.org/x/net
   version: 0ed95abb35c445290478a5348a7b38bb154135fd
   subpackages:

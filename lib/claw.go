@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
@@ -76,12 +77,12 @@ func GetPictureToSection(url string, title string, id int, c chan Sections) {
 	defer res.Body.Close()
 	resultReader := transform.NewReader(res.Body, simplifiedchinese.GBK.NewDecoder())
 
-	document, _ := goquery.NewDocumentFromReader(resultReader)
+	valid := regexp.MustCompile("http://img.feiwan.net/qidazui/manhua/\\w+/\\d+.(jpg|png)")
+	data, _ := ioutil.ReadAll(resultReader)
+	for _, match := range valid.FindAllString(string(data), -1) {
+		sections.Pics = append(sections.Pics, match)
+	}
 
-	document.Find("[name=listNarImg]").First().Find("option").Each(func(_ int, tag *goquery.Selection) {
-		nextPage, _ := tag.Attr("value")
-		sections.Pics = append(sections.Pics, fmt.Sprintf("http://img.feiwan.net/qidazui/manhua/%d/%s.jpg\n", id, nextPage))
-	})
 	sections.Section = Section{
 		Title: title,
 		Url:   url,
@@ -101,7 +102,6 @@ func Stretch(arr []Section) (sections Datas) {
 		id, _ := strconv.Atoi(valid.ReplaceAllString(regstr, "$1"))
 
 		go GetPictureToSection(item.Url, item.Title, id, c)
-		// sections = append(sections, section)
 	}
 
 	index := 0

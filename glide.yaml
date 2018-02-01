@@ -14,3 +14,4 @@ import:
 - package: github.com/kylelemons/go-gypsy
   subpackages:
   - yaml
+- package: github.com/tidwall/gjson

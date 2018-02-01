@@ -1,3 +1,5 @@
 vendor
 template
 lib/leancloud/conf.yaml
+debug
+.vscode
