@@ -23,20 +23,14 @@ type Sections struct {
 	Pics    []string
 	Section Section
 	IdNum   int
+	Index   int
 }
 
 type Datas []Sections
 
-func (a Datas) Len() (length int) {
-	length = len(a)
-	return
-}
-func (a Datas) Less(i, j int) bool {
-	return a[i].IdNum < a[j].IdNum
-}
-func (a Datas) Swap(i, j int) {
-	a[i], a[j] = a[j], a[i]
-}
+func (d Datas) Len() int           { return len(d) }
+func (d Datas) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
+func (d Datas) Less(i, j int) bool { return d[i].Index < d[j].Index }
 
 // GetPage is get book info from url
 func GetPage(url string) (section []Section) {
@@ -67,7 +61,7 @@ func GetPage(url string) (section []Section) {
 	return
 }
 
-func GetPictureToSection(url string, title string, id int, c chan Sections) {
+func GetPictureToSection(url string, title string, id int, index int, c chan Sections) {
 	var sections Sections
 
 	res, err := http.Get(url)
@@ -87,7 +81,10 @@ func GetPictureToSection(url string, title string, id int, c chan Sections) {
 		Title: title,
 		Url:   url,
 	}
+
 	sections.IdNum = id
+	sections.Index = index
+
 	c <- sections
 }
 
@@ -95,18 +92,22 @@ func Stretch(arr []Section) (sections Datas) {
 	c := make(chan Sections)
 	fmt.Println("🐣 开始获取章节内容")
 
-	for _, item := range arr {
+	for i, item := range arr {
 		valid := regexp.MustCompile("/manhua/(\\d+).html")
 		regstr := valid.FindString(item.Url)
 
 		id, _ := strconv.Atoi(valid.ReplaceAllString(regstr, "$1"))
 
-		go GetPictureToSection(item.Url, item.Title, id, c)
+		go GetPictureToSection(item.Url, item.Title, id, i, c)
 	}
 
 	index := 0
 	for i := range c {
-		sections = append(sections, i)
+		sections = append(
+			sections,
+			i,
+		)
+
 		index++
 
 		if index == len(arr) {
