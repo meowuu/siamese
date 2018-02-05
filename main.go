@@ -20,6 +20,7 @@ func main() {
 			Url:    section.Section.Url,
 			Images: section.Pics,
 			ID:     section.IdNum,
+			Index:  section.Index,
 		})
 	}
 

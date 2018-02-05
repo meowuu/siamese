@@ -35,6 +35,7 @@ type Section struct {
 	Images []string `json:"images"`
 	Url    string   `json:"url"`
 	BookID string   `json:"bookid"`
+	Index  int      `json:"index"`
 }
 
 // Wait Group
