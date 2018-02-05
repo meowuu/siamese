@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"sort"
 	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
@@ -25,12 +24,6 @@ type Sections struct {
 	IdNum   int
 	Index   int
 }
-
-type Datas []Sections
-
-func (d Datas) Len() int           { return len(d) }
-func (d Datas) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
-func (d Datas) Less(i, j int) bool { return d[i].Index < d[j].Index }
 
 // GetPage is get book info from url
 func GetPage(url string) (section []Section) {
@@ -88,7 +81,7 @@ func GetPictureToSection(url string, title string, id int, index int, c chan Sec
 	c <- sections
 }
 
-func Stretch(arr []Section) (sections Datas) {
+func Stretch(arr []Section) (sections []Sections) {
 	c := make(chan Sections)
 	fmt.Println("🐣 开始获取章节内容")
 
@@ -111,8 +104,6 @@ func Stretch(arr []Section) (sections Datas) {
 		index++
 
 		if index == len(arr) {
-			sort.Sort(sections)
-
 			fmt.Println("获取完成 ✨")
 			return
 		}
