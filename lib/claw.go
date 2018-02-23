@@ -25,6 +25,12 @@ type Sections struct {
 	Index   int
 }
 
+var client = &http.Client{
+	Transport: &http.Transport{
+		MaxIdleConns: 10,
+	},
+}
+
 // GetPage is get book info from url
 func GetPage(url string) (section []Section) {
 	res, err := http.Get(url)
@@ -57,8 +63,10 @@ func GetPage(url string) (section []Section) {
 func GetPictureToSection(url string, title string, id int, index int, c chan Sections) {
 	var sections Sections
 
-	res, err := http.Get(url)
+	res, err := client.Get(url)
+
 	if err != nil {
+		fmt.Printf("获取-> %s <-数据出现错误", title)
 		log.Fatal(err)
 	}
 	defer res.Body.Close()

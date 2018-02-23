@@ -9,9 +9,9 @@ import (
 )
 
 func init() {
-	orm.RegisterDriver("mysql", orm.DRMySQL)
+	// orm.RegisterDriver("mysql", orm.DRMySQL)
 
-	orm.RegisterDataBase("default", "mysql", "root:159357@/cartoon")
+	// orm.RegisterDataBase("default", "mysql", "root:159357@/cartoon")
 }
 
 // SaveBook save book to database
