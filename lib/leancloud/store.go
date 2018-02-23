@@ -1,6 +1,7 @@
 package leancloud
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -30,12 +31,13 @@ type SearchQuery struct {
 }
 
 type Section struct {
-	Name   string   `json:"name"`
-	ID     int      `json:"id"`
-	Images []string `json:"images"`
-	Url    string   `json:"url"`
-	BookID string   `json:"bookid"`
-	Index  int      `json:"index"`
+	Name   string      `json:"name"`
+	ID     int         `json:"id"`
+	Images []string    `json:"images"`
+	Url    string      `json:"url"`
+	BookID string      `json:"bookid"`
+	Index  int         `json:"index"`
+	ACL    interface{} `json:"ACL"`
 }
 
 // Wait Group
@@ -163,13 +165,21 @@ func (c *Client) GetSectionByName(name string) (objectid string) {
 func (c *Client) SaveSection(section Section) {
 	defer wg.Done()
 
-	if c.GetSectionByName(section.Name) != "" {
-		return
-	}
+	section.ACL = json.RawMessage(`{"*":{"read":true,"write":false}}`)
+
+	url := "classes/section"
+
+	sectionId := c.GetSectionByName(section.Name)
 
 	client := &http.Client{}
 
-	req, _ := c.baseRequest().Post("classes/section").BodyJSON(section).Request()
+	var req *http.Request
+
+	if sectionId != "" {
+		req, _ = c.baseRequest().Put(url + "/" + sectionId).BodyJSON(section).Request()
+	} else {
+		req, _ = c.baseRequest().Post(url).BodyJSON(section).Request()
+	}
 
 	addHeader(req, c)
 	res, _ := client.Do(req)
