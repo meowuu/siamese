@@ -56,6 +56,7 @@ func GetPage(url string) (section []Section) {
 	return
 }
 
+// GetPictureToSection get section picture
 func GetPictureToSection(url string, title string, id int, index int, c chan Section) {
 	var section Section
 
@@ -82,6 +83,7 @@ func GetPictureToSection(url string, title string, id int, index int, c chan Sec
 	c <- section
 }
 
+// Stretch sections
 func Stretch(arr []Section) (sections []Section) {
 	c := make(chan Section)
 	fmt.Println("🐣 开始获取章节内容")

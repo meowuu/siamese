@@ -165,7 +165,7 @@ func (c *Client) GetSectionByName(name string) (objectid string) {
 func (c *Client) SaveSection(section Section) {
 	defer wg.Done()
 
-	section.ACL = json.RawMessage(`{"*":{"read":true,"write":false}}`)
+	section.ACL = json.RawMessage(`{"*":{"read":true,"write":true}}`)
 
 	url := "classes/section"
 

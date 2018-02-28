@@ -16,8 +16,8 @@ func main() {
 
 	for _, section := range sections {
 		leanSections = append(leanSections, leancloud.Section{
-			Name:   section.Section.Title,
-			Url:    section.Section.Url,
+			Name:   section.Title,
+			Url:    section.Url,
 			Images: section.Pics,
 			ID:     section.IdNum,
 			Index:  section.Index,
