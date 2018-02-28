@@ -15,7 +15,7 @@ func init() {
 }
 
 // SaveBook save book to database
-func SaveBook(name string, url string, sections []Sections) (status int64, err error) {
+func SaveBook(name string, url string, sections []Section) (status int64, err error) {
 	fmt.Println("💼 开始写入到数据库")
 
 	o := orm.NewOrm()
@@ -29,7 +29,7 @@ func SaveBook(name string, url string, sections []Sections) (status int64, err e
 
 	for _, sectiondata := range sections {
 		section := &models.Section{
-			Name:   sectiondata.Section.Title,
+			Name:   sectiondata.Title,
 			Bookid: book,
 			Idnum:  sectiondata.IdNum,
 		}

@@ -14,15 +14,11 @@ import (
 )
 
 type Section struct {
+	Pics  []string
 	Title string
 	Url   string
-}
-
-type Sections struct {
-	Pics    []string
-	Section Section
-	IdNum   int
-	Index   int
+	IdNum int
+	Index int
 }
 
 var client = &http.Client{
@@ -60,8 +56,8 @@ func GetPage(url string) (section []Section) {
 	return
 }
 
-func GetPictureToSection(url string, title string, id int, index int, c chan Sections) {
-	var sections Sections
+func GetPictureToSection(url string, title string, id int, index int, c chan Section) {
+	var section Section
 
 	res, err := client.Get(url)
 
@@ -75,22 +71,19 @@ func GetPictureToSection(url string, title string, id int, index int, c chan Sec
 	valid := regexp.MustCompile("http://img.feiwan.net/qidazui/manhua/\\w+/\\d+.(jpg|png)")
 	data, _ := ioutil.ReadAll(resultReader)
 	for _, match := range valid.FindAllString(string(data), -1) {
-		sections.Pics = append(sections.Pics, match)
+		section.Pics = append(section.Pics, match)
 	}
 
-	sections.Section = Section{
-		Title: title,
-		Url:   url,
-	}
+	section.Title = title
+	section.Url = url
+	section.IdNum = id
+	section.Index = index
 
-	sections.IdNum = id
-	sections.Index = index
-
-	c <- sections
+	c <- section
 }
 
-func Stretch(arr []Section) (sections []Sections) {
-	c := make(chan Sections)
+func Stretch(arr []Section) (sections []Section) {
+	c := make(chan Section)
 	fmt.Println("🐣 开始获取章节内容")
 
 	for i, item := range arr {
